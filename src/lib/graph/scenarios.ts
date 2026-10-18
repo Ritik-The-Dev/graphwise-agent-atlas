@@ -300,7 +300,7 @@ export const scenarios: Scenario[] = [
         cypher:
           "MATCH path = (k:Credential {status:'leaked'})-[*1..6]->(d:Datastore)\nWHERE d.sensitivity = 'critical'\nRETURN d.name AS datastore, length(path) AS hops, d.records AS records\nORDER BY hops",
         explain: (o) =>
-          `${new Set(o.table.rows.map((r) => r[0])).size} critical datastores reachable (${[...new Set(o.table.rows.map((r) => r[0]))].join(", ")}). ${o.table.rows.reduce((s, r) => s + (r[0] === o.table.rows[0]?.[0] ? 0 : 0), 0) || "5.1M"} PII records exposed.`,
+          `${new Set(o.table.rows.map((r) => r[0])).size} critical datastores reachable (${[...new Set(o.table.rows.map((r) => r[0]))].join(", ")}). ${(() => { const m = new Map(o.table.rows.map((r) => [r[0], Number(r[2])])); return ([...m.values()].reduce((a, b) => a + b, 0) / 1e6).toFixed(1); })()}M records exposed.`,
       },
       {
         kind: "algo",
